@@ -145,6 +145,41 @@ button {
     gap: 8px;
 }
 
+.theme-auto-mark {
+    /* 仅自动昼夜模式显示，叠在主题按钮右上角的角标。 */
+    display: none;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 3px;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 15px;
+    text-align: center;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--card);
+}
+
+html.is-auto-theme .theme-auto-mark {
+    display: block;
+}
+
+.sr-only {
+    /* 仅供屏幕阅读器读取，不参与布局。 */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 .theme-toggle {
     width: 36px;
     height: 36px;

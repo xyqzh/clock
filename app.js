@@ -6,9 +6,18 @@
     const weekdays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
     const buttons = document.querySelectorAll("[data-format]");
     const themeButton = byId("theme-toggle");
+    const themeStatus = byId("theme-status");
     const themeColorMeta = document.querySelector('meta[name="theme-color"]');
     const statusBarMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
     let theme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+    // 自动昼夜模式：用户未手动选择主题时，按时间段自动切换亮色 / 黑色。
+    let autoTheme = true;
+    try {
+        const storedTheme = localStorage.getItem("moment-theme");
+        if (storedTheme === "dark" || storedTheme === "light") autoTheme = false;
+    } catch (_) { }
+    // 夜间时段：21:00 至次日 08:00（与 index.html 首屏脚本保持一致）。
+    const isNightHour = (hour) => hour >= 21 || hour < 8;
     const RAD = Math.PI / 180;
     // 24 节气对应太阳黄经每 15° 一个节点；month/day 只是迭代初值。
     const SOLAR_TERMS = [
@@ -289,11 +298,12 @@
     }
 
     function applyTheme(nextTheme) {
-        // 同步页面主题、浏览器主题色和 iOS 状态栏样式。
+        // 同步页面主题、自动标识、浏览器主题色和 iOS 状态栏样式。
         theme = nextTheme;
         document.documentElement.dataset.theme = nextTheme;
-        themeButton.setAttribute("aria-pressed", String(nextTheme === "dark"));
-        themeButton.setAttribute("aria-label", nextTheme === "dark" ? "切换浅色背景" : "切换黑色背景");
+        document.documentElement.classList.toggle("is-auto-theme", autoTheme);
+        // 三态循环：自动→亮色、亮色→黑色、黑色→自动。
+        themeButton.setAttribute("aria-label", autoTheme ? "切换浅色背景" : nextTheme === "dark" ? "切换自动模式" : "切换黑色背景");
         if (themeColorMeta) {
             themeColorMeta.setAttribute("content", nextTheme === "dark" ? "#080a09" : "#f4f1e9");
         }
@@ -303,9 +313,8 @@
     }
 
     function updateNightDim(now) {
-        // 使用设备本地时间判断夜间时段：21:00 至次日 08:00。
-        const hour = now.getHours();
-        document.documentElement.classList.toggle("is-night-dim", hour >= 21 || hour < 8);
+        // 夜间时段额外降低 20% 亮度。
+        document.documentElement.classList.toggle("is-night-dim", isNightHour(now.getHours()));
     }
 
     function render() {
@@ -313,6 +322,11 @@
         const now = new Date();
         updateNightDim(now);
         const hours = now.getHours();
+        if (autoTheme) {
+            // 自动昼夜：21:00 至次日 08:00 黑色，其余亮色。
+            const autoTarget = isNightHour(hours) ? "dark" : "light";
+            if (autoTarget !== theme) applyTheme(autoTarget);
+        }
         const minutes = now.getMinutes();
         const seconds = now.getSeconds();
         const year = now.getFullYear();
@@ -360,9 +374,23 @@
         });
     });
     themeButton.addEventListener("click", () => {
-        const nextTheme = theme === "dark" ? "light" : "dark";
-        applyTheme(nextTheme);
-        try { localStorage.setItem("moment-theme", nextTheme); } catch (_) { }
+        // 三态循环：自动 → 亮色 → 黑色 → 自动；手动选择会被记住。
+        if (autoTheme) {
+            autoTheme = false;
+            applyTheme("light");
+            try { localStorage.setItem("moment-theme", "light"); } catch (_) { }
+        } else if (theme === "light") {
+            applyTheme("dark");
+            try { localStorage.setItem("moment-theme", "dark"); } catch (_) { }
+        } else {
+            autoTheme = true;
+            applyTheme(isNightHour(new Date().getHours()) ? "dark" : "light");
+            try { localStorage.removeItem("moment-theme"); } catch (_) { }
+        }
+        // 播报当前模式，方便屏幕阅读器用户。
+        if (themeStatus) {
+            themeStatus.textContent = autoTheme ? "已切换到自动模式" : theme === "dark" ? "已切换到黑色模式" : "已切换到亮色模式";
+        }
     });
     document.addEventListener("visibilitychange", tick);
     window.addEventListener("pageshow", tick);
