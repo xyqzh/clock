@@ -27,7 +27,7 @@
 html[data-theme="dark"] {
     color-scheme: dark;
     --paper: #080a09;
-    --ink: #f3f0e5;
+    --ink: #817a62;
     --muted: #a8aea2;
     --line: #2b312b;
     --accent: #e39479;
@@ -66,7 +66,7 @@ html.is-night-dim {
 }
 
 html[data-theme="dark"].is-night-dim {
-    --ink: #c7c4b8;
+    --ink: #242011;
     --muted: #8d9387;
     --accent: #b67963;
     --control-text: #979d90;
@@ -789,7 +789,8 @@ button:focus-visible {
 }
 
 /* 主屏独立模式使用动态视口高度，避免浏览器工具栏收起后留下空白。 */
-@media (display-mode: standalone), (display-mode: fullscreen) {
+@media (display-mode: standalone),
+(display-mode: fullscreen) {
     .page {
         min-height: 100dvh;
     }
