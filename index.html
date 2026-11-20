@@ -31,6 +31,10 @@
             if (darkTheme) {
                 document.documentElement.dataset.theme = "dark";
             }
+            const themeColor = document.querySelector('meta[name="theme-color"]');
+            if (themeColor) {
+                themeColor.setAttribute("content", darkTheme ? "#080a09" : "#f4f1e9");
+            }
             if (isAuto) {
                 document.documentElement.classList.add("is-auto-theme");
             }
@@ -48,6 +52,7 @@
 
 <body>
     <main class="page">
+        <h1 class="sr-only">此刻，本地时钟</h1>
         <!-- 整张卡片在手机端铺满视口，在桌面端居中显示 -->
         <section class="clock-panel" aria-label="本地时钟">
             <!-- 左侧：实时时间 -->
@@ -56,7 +61,7 @@
                     <span class="small-label" id="greeting">此刻时间</span>
                     <div class="panel-actions">
                         <span class="sr-only" id="theme-status" aria-live="polite"></span>
-                        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换黑色背景">
+                        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换主题模式">
                             <span class="theme-auto-mark" aria-hidden="true">A</span>
                             <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M20 15.2A8.5 8.5 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z" />
@@ -68,8 +73,7 @@
                             </svg>
                         </button>
                         <div class="format-control" role="group" aria-label="时间格式">
-                            <button type="button" data-format="24" aria-pressed="true">24 小时</button>
-                            <button type="button" data-format="12" aria-pressed="false">12 小时</button>
+                            <button type="button" data-format="24" aria-label="切换为12小时制">24 小时</button>
                         </div>
                     </div>
                 </div>

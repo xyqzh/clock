@@ -293,7 +293,9 @@
 
     function updateButtons() {
         buttons.forEach((button) => {
-            button.setAttribute("aria-pressed", String(button.dataset.format === format));
+            button.dataset.format = format;
+            button.textContent = `${format} 小时`;
+            button.setAttribute("aria-label", `切换为${format === "24" ? "12" : "24"}小时制`);
         });
     }
 
@@ -367,7 +369,7 @@
 
     buttons.forEach((button) => {
         button.addEventListener("click", () => {
-            format = button.dataset.format;
+            format = format === "24" ? "12" : "24";
             try { localStorage.setItem("moment-hour-format", format); } catch (_) { }
             updateButtons();
             tick();
