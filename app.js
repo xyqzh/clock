@@ -7,6 +7,11 @@
     const buttons = document.querySelectorAll("[data-format]");
     const themeButton = byId("theme-toggle");
     const themeStatus = byId("theme-status");
+    const settingsButton = byId("settings-toggle");
+    const settingsPanel = byId("display-settings");
+    const fontColorInput = byId("font-color");
+    const fontSizeInput = byId("font-size");
+    const fontSizeValue = byId("font-size-value");
     const themeColorMeta = document.querySelector('meta[name="theme-color"]');
     const statusBarMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
     let theme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
@@ -18,6 +23,45 @@
     } catch (_) { }
     // 夜间时段：21:00 至次日 08:00（与 index.html 首屏脚本保持一致）。
     const isNightHour = (hour) => hour >= 21 || hour < 8;
+    const rootStyle = document.documentElement.style;
+    const defaultFontColors = { light: "#2c382e", dark: "#b7b2a6" };
+
+    function loadThemeFontColor() {
+        let storedColor = "";
+        try {
+            storedColor = localStorage.getItem(`moment-font-color-${theme}`);
+            if (!storedColor && theme === "light") {
+                storedColor = localStorage.getItem("moment-font-color");
+            }
+            storedColor = storedColor || defaultFontColors[theme];
+        } catch (_) {
+            storedColor = defaultFontColors[theme];
+        }
+        fontColorInput.value = storedColor;
+    }
+
+    function applyDisplaySettings() {
+        const color = fontColorInput.value;
+        const scale = Number(fontSizeInput.value) / 100;
+        const progress = `${((Number(fontSizeInput.value) - Number(fontSizeInput.min)) / (Number(fontSizeInput.max) - Number(fontSizeInput.min))) * 100}%`;
+        rootStyle.setProperty("--display-text-color", color);
+        rootStyle.setProperty("--clock-scale", String(scale));
+        rootStyle.setProperty("--range-progress", progress);
+        fontSizeValue.value = `${fontSizeInput.value}%`;
+        fontSizeValue.textContent = `${fontSizeInput.value}%`;
+        try {
+            localStorage.setItem(`moment-font-color-${theme}`, color);
+            localStorage.setItem("moment-font-color", color);
+            localStorage.setItem("moment-font-size", fontSizeInput.value);
+        } catch (_) { }
+    }
+
+    try {
+        const storedSize = localStorage.getItem("moment-font-size");
+        if (storedSize && Number(storedSize) >= 80 && Number(storedSize) <= 130) fontSizeInput.value = storedSize;
+    } catch (_) { }
+    loadThemeFontColor();
+    applyDisplaySettings();
     const RAD = Math.PI / 180;
     // 24 节气对应太阳黄经每 15° 一个节点；month/day 只是迭代初值。
     const SOLAR_TERMS = [
@@ -304,6 +348,8 @@
         theme = nextTheme;
         document.documentElement.dataset.theme = nextTheme;
         document.documentElement.classList.toggle("is-auto-theme", autoTheme);
+        loadThemeFontColor();
+        applyDisplaySettings();
         // 三态循环：自动→亮色、亮色→黑色、黑色→自动。
         themeButton.setAttribute("aria-label", autoTheme ? "切换浅色背景" : nextTheme === "dark" ? "切换自动模式" : "切换黑色背景");
         if (themeColorMeta) {
@@ -375,6 +421,13 @@
             tick();
         });
     });
+    settingsButton.addEventListener("click", () => {
+        const isOpen = !settingsPanel.hidden;
+        settingsPanel.hidden = isOpen;
+        settingsButton.setAttribute("aria-expanded", String(!isOpen));
+    });
+    fontColorInput.addEventListener("input", applyDisplaySettings);
+    fontSizeInput.addEventListener("input", applyDisplaySettings);
     themeButton.addEventListener("click", () => {
         // 三态循环：自动 → 亮色 → 黑色 → 自动；手动选择会被记住。
         if (autoTheme) {

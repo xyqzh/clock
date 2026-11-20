@@ -120,6 +120,7 @@ button {
     background: var(--card);
     padding: 28px;
     min-width: 0;
+    position: relative;
 }
 
 .panel-top,
@@ -201,6 +202,134 @@ html.is-auto-theme .theme-auto-mark {
     color: var(--accent);
 }
 
+.settings-toggle {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: var(--control);
+    color: var(--control-text);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.settings-toggle:hover {
+    color: var(--accent);
+}
+
+.settings-icon {
+    width: 17px;
+    height: 17px;
+    fill: currentColor;
+}
+
+.display-settings {
+    position: absolute;
+    top: 78px;
+    right: 28px;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    align-items: center;
+    width: max-content;
+    max-width: calc(100% - 56px);
+    margin-top: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 11px;
+    background: color-mix(in srgb, var(--card) 68%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-color: color-mix(in srgb, var(--line) 72%, transparent);
+    box-shadow: 0 10px 24px -14px #29362666;
+}
+
+.display-settings[hidden] {
+    display: none;
+}
+
+.display-settings label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.display-settings input[type="color"] {
+    width: 30px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.display-settings input[type="range"] {
+    width: 110px;
+    height: 18px;
+    margin: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.display-settings input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(to right, var(--accent) 0 var(--range-progress, 40%), var(--control) var(--range-progress, 40%) 100%);
+}
+
+.display-settings input[type="range"]::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
+    margin-top: -5px;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    background: var(--card);
+    box-shadow: 0 1px 3px #29362633;
+}
+
+.display-settings input[type="range"]::-moz-range-track {
+    height: 4px;
+    border-radius: 999px;
+    background: var(--control);
+}
+
+.display-settings input[type="range"]::-moz-range-progress {
+    height: 4px;
+    border-radius: 999px;
+    background: var(--accent);
+}
+
+.display-settings input[type="range"]::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    background: var(--card);
+    box-shadow: 0 1px 3px #29362633;
+}
+
+.display-settings input[type="range"]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.display-settings output {
+    min-width: 34px;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
 .theme-icon {
     width: 17px;
     height: 17px;
@@ -273,12 +402,13 @@ button:focus-visible {
 
 .time {
     font-family: "Bahnschrift", "DIN Alternate", "Trebuchet MS", sans-serif;
-    font-size: clamp(84px, 12.5vw, 150px);
     font-weight: 300;
     font-variant-numeric: tabular-nums;
     letter-spacing: -6px;
     line-height: 1.08;
     white-space: nowrap;
+    color: var(--display-text-color, var(--ink));
+    font-size: calc(var(--clock-scale, 1) * clamp(84px, 12.5vw, 150px));
 }
 
 .colon {
@@ -311,6 +441,10 @@ button:focus-visible {
 }
 
 .clock-bottom {
+    position: absolute;
+    left: 28px;
+    right: 28px;
+    bottom: 28px;
     padding-top: 18px;
     color: var(--muted);
     font-size: 10px;
@@ -449,12 +583,19 @@ button:focus-visible {
         flex-direction: column;
     }
 
+    .display-settings {
+        top: 70px;
+        right: 20px;
+        max-width: calc(100% - 40px);
+    }
+
     .time {
-        font-size: clamp(72px, 22vw, 128px);
+        font-size: calc(var(--clock-scale, 1) * clamp(72px, 22vw, 128px));
         letter-spacing: -5px;
     }
 
     .time-wrap {
+        height: auto;
         gap: 9px;
         padding: 36px 0 29px;
         margin-block: auto;
@@ -466,6 +607,7 @@ button:focus-visible {
     }
 
     .clock-bottom {
+        position: static;
         font-size: 9px;
         padding-top: 15px;
     }
@@ -553,11 +695,23 @@ button:focus-visible {
         padding: 16px;
     }
 
+    .display-settings {
+        top: 60px;
+        right: 16px;
+        max-width: calc(100% - 32px);
+    }
+
     .panel-actions {
         gap: 6px;
     }
 
     .theme-toggle {
+        width: 30px;
+        height: 30px;
+        flex-basis: 30px;
+    }
+
+    .settings-toggle {
         width: 30px;
         height: 30px;
         flex-basis: 30px;
@@ -577,6 +731,7 @@ button:focus-visible {
     }
 
     .time-wrap {
+        height: auto;
         gap: 6px;
     }
 }
@@ -619,7 +774,14 @@ button:focus-visible {
         flex-direction: column;
     }
 
+    .display-settings {
+        top: 60px;
+        right: 16px;
+        max-width: calc(100% - 32px);
+    }
+
     .time-wrap {
+        height: auto;
         padding: 12px 0 10px;
         gap: 10px;
         margin-block: auto;
@@ -631,12 +793,18 @@ button:focus-visible {
         flex-basis: 44px;
     }
 
+    .settings-toggle {
+        width: 44px;
+        height: 44px;
+        flex-basis: 44px;
+    }
+
     .format-control {
         height: 44px;
     }
 
     .time {
-        font-size: min(24vw, 50vh, 210px);
+        font-size: calc(var(--clock-scale, 1) * min(24vw, 50vh, 210px));
         letter-spacing: -7px;
     }
 
@@ -646,6 +814,7 @@ button:focus-visible {
     }
 
     .clock-bottom {
+        position: static;
         padding-top: 10px;
         font-size: 9px;
     }
@@ -755,7 +924,7 @@ button:focus-visible {
     }
 
     .time {
-        font-size: min(22vw, 46vh, 180px);
+        font-size: calc(var(--clock-scale, 1) * min(22vw, 46vh, 180px));
         letter-spacing: -5px;
     }
 
@@ -769,6 +938,12 @@ button:focus-visible {
     }
 
     .theme-toggle {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+    }
+
+    .settings-toggle {
         width: 36px;
         height: 36px;
         flex-basis: 36px;

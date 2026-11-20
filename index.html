@@ -75,7 +75,25 @@
                         <div class="format-control" role="group" aria-label="时间格式">
                             <button type="button" data-format="24" aria-label="切换为12小时制">24 小时</button>
                         </div>
+                        <button class="settings-toggle" id="settings-toggle" type="button" aria-label="显示设置"
+                            aria-expanded="false" aria-controls="display-settings">
+                            <svg class="settings-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M19.43 12.98c.04-.32.07-.65.07-.98s-.02-.66-.07-.98l2.11-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.61-.22l-2.49 1a7.4 7.4 0 0 0-1.7-.98L14.5 2.42A.49.49 0 0 0 14 2h-4a.49.49 0 0 0-.49.42L9.13 5.07c-.61.25-1.18.58-1.7.98l-2.49-1a.5.5 0 0 0-.61.22l-2 3.46a.5.5 0 0 0 .12.64l2.11 1.65c-.04.32-.08.65-.08.98s.03.66.08.98l-2.11 1.65a.5.5 0 0 0-.12.64l2 3.46a.5.5 0 0 0 .61.22l2.49-1c.52.4 1.09.73 1.7.98l.38 2.65A.49.49 0 0 0 10 22h4a.49.49 0 0 0 .49-.42l.38-2.65c.61-.25 1.18-.58 1.7-.98l2.49 1a.5.5 0 0 0 .61-.22l2-3.46a.5.5 0 0 0-.12-.64zM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5z" />
+                            </svg>
+                        </button>
                     </div>
+                </div>
+                <div class="display-settings" id="display-settings" hidden>
+                    <label>
+                        <span>时钟颜色</span>
+                        <input id="font-color" type="color" value="#2c382e" aria-label="选择字体颜色">
+                    </label>
+                    <label>
+                        <span>时钟大小</span>
+                        <input id="font-size" type="range" min="80" max="130" step="1" value="100"
+                            aria-label="调整字体大小">
+                        <output id="font-size-value" for="font-size">100%</output>
+                    </label>
                 </div>
                 <div class="time-wrap">
                     <span class="period" id="period" hidden></span>
