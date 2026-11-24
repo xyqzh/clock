@@ -66,7 +66,6 @@ html.is-night-dim {
 }
 
 html[data-theme="dark"].is-night-dim {
-    --ink: #242011;
     --muted: #8d9387;
     --accent: #b67963;
     --control-text: #979d90;
