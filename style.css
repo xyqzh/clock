@@ -53,7 +53,6 @@ html[data-theme="dark"].is-night-dim body {
 
 /* 22:00–06:59 降低文字亮度，背景和布局保持不变。 */
 html.is-night-dim {
-    --ink: #20281f;
     --muted: #5e6559;
     --accent: #8f432f;
     --control-text: #555c51;
